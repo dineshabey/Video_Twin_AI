@@ -33,6 +33,7 @@ desktop.ini
 # Logs
 *.log
 logs/
+logs.txt
 
 # Testing
 .pytest_cache/
@@ -64,3 +65,35 @@ chroma_db/
 # Node (if using npm for frontend tools)
 node_modules/
 package-lock.json
+
+# Workflow files (internal use only)
+.agent/
+
+# Documentation files (not needed in repo)
+GIT_UPLOAD_CHECKLIST.md
+POC_VERIFICATION.md
+LOCAL_SETUP.md
+
+# Deployment files (not needed for this project)
+Procfile
+
+# Debug and test files
+debug_*.py
+test_*.py
+check_*.py
+list_*.py
+available_models.txt
+
+# POC requirement files (already read, not needed in repo)
+poc.pdf
+poc.txt
+
+# Architecture diagrams (can add back if needed)
+*.jpg
+*.jpeg
+*.png
+architecture*.jpg
+High-level-architecture.jpg
+
+# Duplicate requirements (keep only root requirements.txt)
+backend/requirements.txt
