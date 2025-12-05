@@ -1,0 +1,66 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+
+# Environment variables
+.env
+.env.local
+backend/.env
+
+# Sensitive data
+cookies.txt
+*.txt.backup
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Build
+dist/
+build/
+*.egg-info/
+
+# Cloud
+.gcloud/
+.google-cloud/
+
+# Temporary files
+*.tmp
+temp/
+tmp/
+
+# ChromaDB
+chroma_db/
+*.db
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Node (if using npm for frontend tools)
+node_modules/
+package-lock.json

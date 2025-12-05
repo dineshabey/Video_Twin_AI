@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+python-dotenv
+yt-dlp
+langchain
+langchain-google-genai
+langchain-community
+chromadb
+pydantic
+functions-framework

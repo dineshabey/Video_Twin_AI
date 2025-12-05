@@ -1,0 +1,39 @@
+Scope of POC: Full-Stack AI Application Engineer
+Please provide a "cut-down" version hat validates abilities to understand the core logic (RAG + Prompt
+Engineering) without wasting time on boilerplate configuration.
+Here is the project definition. It strips away the complexity to focus purely on logic and code quality.
+
+Technical Assessment: The "Single-Video Twin"
+
+Objective: Build a functional Proof of Concept (POC) that turns a single YouTube video URL into a
+conversational AI agent. The agent should answer questions based strictly on the video content and
+attempt to adopt the speaker's tone.
+Timebox:
+• Duration: 5 days maximum.
+The Functional Requirements:
+1. Ingestion:
+o The user inputs a YouTube URL into a simple text field.
+o The backend retrieves the transcript of that video (you may use youtube-transcript-api
+or similar libraries).
+2. Processing (RAG):
+o Store the transcript in a temporary knowledge base (in-memory Vector Store or simple
+ChromaDB/FAISS implementation is acceptable; no complex database required).
+o Generate embeddings for the transcript chunks.
+3. Interaction:
+o Provide a simple chat interface.
+o When the user asks a question, retrieve the most relevant information from the
+transcript.
+4. The "Twin" Aspect:
+o The System Prompt must instruct the AI to answer only using the provided context.
+
+The Tech Stack (Strict):
+• Frontend: No design libraries needed, standard HTML/CSS is fine. We care about functionality,
+not aesthetics.
+• Backend: Python (Serverless functions are a plus).
+• AI: free choice.
+• Cloud: AWS, Azure or GCP
+Deliverables:
+1. GitHub Repository: Clean code structure, comments where necessary.
+2. README.md: Clear instructions on how to install dependencies and run the project locally.
+3. Demo Video (Loom/Screen recording): A 2-minute video showing the ingestion of a URL and a
+chat interaction demonstrating the bot answering correctly based on the video.

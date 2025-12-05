@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Twin AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="main-wrapper">
+        <div class="container">
+            <header>
+                <div class="logo-area">
+                    <i class="fa-brands fa-youtube logo-icon"></i>
+                    <h1>Video Twin AI</h1>
+                </div>
+                <p class="subtitle">Chat with any YouTube video instantly</p>
+            </header>
+
+            <section id="ingestion-section" class="card">
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-link input-icon"></i>
+                    <input type="text" id="video-url" placeholder="Paste YouTube URL here..." />
+                </div>
+                <button id="ingest-btn" class="primary-btn">
+                    <i class="fa-solid fa-bolt"></i> Ingest Video
+                </button>
+            </section>
+
+            <section id="chat-section" class="card hidden">
+                <div id="chat-history">
+                    <!-- Messages will appear here -->
+                    <div class="message system">
+                        <div class="message-content">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <p>Video ingested! I'm ready to answer your questions.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="user-query" placeholder="Ask a question about the video..." />
+                    <button id="send-btn" class="icon-btn">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="status-message" class="hidden"></div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
