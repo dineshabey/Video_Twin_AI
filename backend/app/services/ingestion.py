@@ -7,7 +7,17 @@ from typing import List, Optional
 import os
 
 class IngestionService:
+    """
+    Handles YouTube video transcript extraction and text chunking for RAG pipeline.
+    
+    Supports cookie-based authentication to bypass YouTube's bot detection
+    and implements robust error handling for various video formats.
+    """
+    
     def __init__(self):
+        """Initialize text splitter with optimized chunk parameters for semantic search."""
+        # Chunk size balances context window and retrieval precision
+        # 200-char overlap ensures semantic continuity across chunks
         self.text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=1000,
             chunk_overlap=200
@@ -15,7 +25,18 @@ class IngestionService:
 
     def _extract_video_id(self, url: str) -> Optional[str]:
         """
-        Extracts the video ID from a YouTube URL.
+        Extract 11-character video ID from various YouTube URL formats.
+        
+        Supports:
+            - youtube.com/watch?v=VIDEO_ID
+            - youtu.be/VIDEO_ID
+            - youtube.com/embed/VIDEO_ID
+            
+        Args:
+            url: YouTube video URL
+            
+        Returns:
+            11-character video ID or None if invalid format
         """
         pattern = r'(?:v=|\/)([0-9A-Za-z_-]{11}).*'
         match = re.search(pattern, url)
@@ -25,7 +46,26 @@ class IngestionService:
 
     def get_transcript(self, url: str) -> str:
         """
-        Fetches the transcript for a given video URL using yt-dlp with cookies.
+        Fetch video transcript using yt-dlp with cookie-based authentication.
+        
+        Strategy:
+            1. Load cookies from environment (production) or filesystem (local)
+            2. Use browser-like headers to avoid bot detection
+            3. Extract JSON3 subtitle format for best quality
+            4. Parse and concatenate all text segments
+            
+        Args:
+            url: YouTube video URL
+            
+        Returns:
+            Full transcript as concatenated string
+            
+        Raises:
+            Exception: If no subtitles found or extraction fails
+            
+        Note:
+            Cookies are required for videos that trigger YouTube's bot detection.
+            In Cloud Run, cookies are loaded from YOUTUBE_COOKIES_BASE64 env var.
         """
         ydl_opts = {
             'writesubtitles': True,
@@ -33,19 +73,20 @@ class IngestionService:
             'skip_download': True,
             'quiet': False,
             'no_warnings': False,
+            # Mimic Chrome browser to avoid bot detection
             'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
             'referer': 'https://www.youtube.com/',
             'nocheckcertificate': True,
         }
 
-        # PRODUCTION SOLUTION: Load cookies from environment variable
-        # This allows updating cookies without redeployment
+        # Cookie authentication strategy for production deployment
+        # Cookies stored as base64-encoded env var to avoid file system dependencies
         youtube_cookies = os.getenv('YOUTUBE_COOKIES_BASE64')
         
         if youtube_cookies:
             try:
                 import base64
-                # Decode base64 cookies and write to /tmp (writable in Cloud Run)
+                # Decode and write to /tmp (only writable location in Cloud Run)
                 cookies_content = base64.b64decode(youtube_cookies).decode('utf-8')
                 cookie_file = '/tmp/cookies.txt'
                 
@@ -57,7 +98,7 @@ class IngestionService:
             except Exception as e:
                 print(f"⚠ Error loading cookies from env: {e}")
         else:
-            # Fallback: try to find cookies.txt in various locations
+            # Local development fallback - check multiple possible locations
             cookie_paths = [
                 'cookies.txt',
                 '/workspace/cookies.txt',
@@ -82,22 +123,22 @@ class IngestionService:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(url, download=False)
                 
-                # Get subtitles (manual or auto)
+                # Prefer manual subtitles over auto-generated for accuracy
                 subtitles = info.get('subtitles') or info.get('automatic_captions')
                 if not subtitles:
                     raise Exception("No subtitles found for this video.")
 
-                # Prefer English
+                # Language selection priority: English variants, then first available
                 lang = 'en'
                 if lang not in subtitles:
-                    # Try to find any english variant
                     lang = next((l for l in subtitles if l.startswith('en')), None)
                 
                 if not lang:
-                    # Fallback to first available
                     lang = list(subtitles.keys())[0]
 
                 subs = subtitles[lang]
+                
+                # JSON3 format provides best quality with proper timing and formatting
                 json3_sub = next((s for s in subs if s['ext'] == 'json3'), None)
                 
                 if json3_sub:
@@ -105,6 +146,7 @@ class IngestionService:
                     response.raise_for_status()
                     data = response.json()
 
+                    # Parse JSON3 structure: events -> segs -> utf8 text
                     full_text = []
                     if 'events' in data:
                         for event in data['events']:
@@ -121,7 +163,17 @@ class IngestionService:
 
     def process_video(self, url: str) -> List[str]:
         """
-        Orchestrates the ingestion process.
+        Orchestrate full ingestion pipeline: validate URL -> fetch transcript -> chunk text.
+        
+        Args:
+            url: YouTube video URL
+            
+        Returns:
+            List of text chunks ready for embedding
+            
+        Raises:
+            ValueError: If URL format is invalid
+            Exception: If transcript extraction fails
         """
         if not self._extract_video_id(url):
              raise ValueError("Invalid YouTube URL")
