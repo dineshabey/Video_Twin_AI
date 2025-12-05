@@ -73,6 +73,8 @@ package-lock.json
 GIT_UPLOAD_CHECKLIST.md
 POC_VERIFICATION.md
 LOCAL_SETUP.md
+CODE_QUALITY_IMPROVEMENTS.md
+REPOSITORY_STATUS.md
 
 # Deployment files (not needed for this project)
 Procfile
