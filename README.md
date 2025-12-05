@@ -80,17 +80,23 @@ uvicorn backend.main:app --reload --port 8000
 ```
 
 ### 7. Start Frontend Server
-Open a new terminal:
+Open a **new terminal** (keep backend running):
 ```bash
 cd frontend
 python -m http.server 8080
 ```
 
 ### 8. Access the Application
-Open your browser and navigate to:
+**IMPORTANT:** Open your browser and navigate to:
 ```
 http://localhost:8080
 ```
+
+⚠️ **Common Mistake:** Do NOT use `http://localhost:8000`
+- ✅ `http://localhost:8080` - Frontend server (CSS/JS work correctly)
+- ❌ `http://localhost:8000` - Backend API only (CSS/JS will not load)
+
+**Why?** The backend (port 8000) serves the API, while the frontend server (port 8080) serves the UI with proper static file paths.
 
 ## 🎬 How to Use
 
@@ -206,6 +212,15 @@ gcloud run services update single-video-twin \
 - Use Python HTTP server instead of opening HTML directly
 - Ensure backend is running on port 8000
 - Check `API_URL` in `frontend/app.js`
+
+### CSS/JavaScript Not Loading Locally
+**Problem:** Page loads but has no styling (plain HTML)
+
+**Solution:** Make sure you're accessing the **frontend server**, not the backend:
+- ✅ Correct: `http://localhost:8080`
+- ❌ Wrong: `http://localhost:8000` or `http://127.0.0.1:8000`
+
+**Why?** The backend server expects `/static/` prefix for CSS/JS files, but the HTML uses relative paths. The frontend server (port 8080) serves files correctly.
 
 ### Port Already in Use
 ```bash
