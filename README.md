@@ -44,7 +44,7 @@ A full-stack AI application that transforms any YouTube video into an intelligen
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/dineshabey/single-video-twin-ai.git
+git clone https://github.com/dineshabey/Video_Twin_AI.git
 cd chat-with-youtube-video
 ```
 
