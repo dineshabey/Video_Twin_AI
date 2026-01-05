@@ -14,6 +14,16 @@ A full-stack AI application that transforms any YouTube video into an intelligen
 
 **Deployed URL**: [https://single-video-twin-298684878814.us-central1.run.app/](https://single-video-twin-298684878814.us-central1.run.app/)
 
+## 📸 Screenshots
+
+<p align="center">
+  <img src="image/img_1.jpg" width="800" alt="App Screenshot 1">
+  <br>
+  <img src="image/img_2.jpg" width="800" alt="App Screenshot 2">
+  <br>
+  <img src="image/img_3.jpg" width="800" alt="App Screenshot 3">
+</p>
+
 ## 🛠️ Tech Stack
 
 ### Frontend
@@ -180,6 +190,21 @@ gcloud run services update single-video-twin \
 ## 🔍 How It Works
 
 ### RAG Pipeline
+
+```mermaid
+graph TD
+    A[YouTube URL] --> B[yt-dlp: Transcript Extraction]
+    B --> C[Text Splitting: 1000 char chunks]
+    C --> D[Google text-embedding-004]
+    D --> E[(ChromaDB: Vector Store)]
+    
+    F[User Question] --> G[Google text-embedding-004]
+    G --> H[Similarity Search]
+    E --> H
+    H --> I[Context + System Prompt]
+    I --> J[Google Gemini 2.0 Flash]
+    J --> K[AI Answer]
+```
 
 1. **Ingestion**:
    - User provides YouTube URL
